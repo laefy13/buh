@@ -1,0 +1,11 @@
+2023-11-11 15:00:49,522 Training with a single process on 1 device (cuda:0).
+2023-11-11 15:00:49,818 Model resnet50 created, param count:25557032
+2023-11-11 15:00:49,818 Data processing configuration for current model + dataset:
+2023-11-11 15:00:49,818 	input_size: (3, 224, 224)
+2023-11-11 15:00:49,818 	interpolation: bicubic
+2023-11-11 15:00:49,818 	mean: (0.485, 0.456, 0.406)
+2023-11-11 15:00:49,818 	std: (0.229, 0.224, 0.225)
+2023-11-11 15:00:49,818 	crop_pct: 0.95
+2023-11-11 15:00:49,818 	crop_mode: center
+2023-11-11 15:00:51,231 Learning rate (0.05) calculated from base learning rate (0.1) and effective global batch size (128) with linear scaling.
+2023-11-11 15:00:51,232 AMP not enabled. Training in float32.
