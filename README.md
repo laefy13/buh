@@ -2,7 +2,8 @@
 ### python = 3.8
 # Run these command first:
 * git clone https://github.com/laefy13/pytorch-image-models.git
-* npip install -r freezed.txt
+* git clone https://github.com/laefy13/keras-efficientnets.git
+* pip install -r freezed.txt
 
 # For the NAS? 
 ### yeah just do:
