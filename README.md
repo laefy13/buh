@@ -2,7 +2,7 @@
 python = 3.8
 # Run these command first:
 git clone https://github.com/laefy13/pytorch-image-models.git
-pip install -r freezed.txt
+\npip install -r freezed.txt
 
 # For the NAS? 
 yeah just do:
