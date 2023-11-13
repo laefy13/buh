@@ -3,6 +3,7 @@
 * gpu is required, i dont know if you can train in cpu while having smaller batch size, but i think its possible
 * if going to use gpu, cuda and cudnn is required, i recommend using docker/wsl/linux os for easy installation of cuda and cudnn
 * make sure to check that the compatibility of cuda and torch are compatible, https://pytorch.org/get-started/previous-versions/, just check the system logs for the gpu, python version, pip list, and cuda and cudnn version
+* [google colab notebook here](https://colab.research.google.com/drive/1RrgsdnAgvHFcr9lQhsYEdZk6Kz_lFTWE?usp=sharing)
 ### python = 3.8
 # Run these command first:
 * git clone https://github.com/laefy13/buh.git
