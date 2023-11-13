@@ -5,6 +5,8 @@
 * make sure to check that the compatibility of cuda and torch are compatible, https://pytorch.org/get-started/previous-versions/, just check the system logs for the gpu, python version, pip list, and cuda and cudnn version
 ### python = 3.8
 # Run these command first:
+* git clone https://github.com/laefy13/buh.git
+* cd buh 
 * git clone https://github.com/laefy13/pytorch-image-models.git
 * git clone https://github.com/laefy13/keras-efficientnets.git
 ### for installing 
