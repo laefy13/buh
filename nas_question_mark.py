@@ -1,3 +1,26 @@
+'''
+This script is just for looping the train.py from the pytorch-image-models repo
+and this is where you can adjust the hyperparameters for the effnetb0
+if editing the structure of the effnet is needed go to the pytorch-image-models repo instead
+
+
+    Ref impl: https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/efficientnet_model.py
+    Paper: https://arxiv.org/abs/1905.11946
+
+    EfficientNet params
+    name: (channel_multiplier, depth_multiplier, resolution, dropout_rate)
+    'efficientnet-b0': (1.0, 1.0, 224, 0.2),
+    'efficientnet-b1': (1.0, 1.1, 240, 0.2),
+    'efficientnet-b2': (1.1, 1.2, 260, 0.3),
+    'efficientnet-b3': (1.2, 1.4, 300, 0.3),
+    'efficientnet-b4': (1.4, 1.8, 380, 0.4),
+    'efficientnet-b5': (1.6, 2.2, 456, 0.4),
+    'efficientnet-b6': (1.8, 2.6, 528, 0.5),
+    'efficientnet-b7': (2.0, 3.1, 600, 0.5),
+    'efficientnet-b8': (2.2, 3.6, 672, 0.5),
+    'efficientnet-l2': (4.3, 5.3, 800, 0.5),
+
+'''
 import os
 import subprocess
 from keras_efficientnets.optimize import optimize_coefficients
@@ -54,20 +77,38 @@ TRAINING SCRIPT, ADJUSTABLE ACCORDINGLY
  WHILE B4 WILL HAVE ALMOST THE SAME FLOPS AS THE BASE FLOPS
  AND B5-7 WILL HAVE HIGHER FLOPS AS  THE BASE FLOPS
 
+ 
+
 '''
-# try:
-#     os.chdir('pytorch-image-models')  # Provide the complete path
-#     print("Directory changed successfully")
-# except Exception as e:
-#     print("Directory change failed:", e)
-# subprocess.run('ls')
+# function for producing an array of an array of coefficients, depth, width and resolution
+# check the readme of the keras-efficientnets for the syntax of this function
 results = optimize_coefficients(phi=1., max_cost=2.0, search_per_coeff=10, verbose=True,sort_by_loss=True)
-buh =1
+
+#loop that will executre the train.py of the pytorch-image-models repo
+#the hyperparameters currently being used is according to the original efficientnet paper (i dotn know if i missed some)
 for i in range(len(results)):
     depth = results[i][0]
     width = results[i][1]
     resolution = round(224 * results[i][2])
-    run_this = f"python -u pytorch-image-models/train.py --epochs 100 --log-interval 1 --data-dir './img/' --class-map './txt/class.txt' --model efficientnet_b0 --input-size 3 {resolution} {resolution} --batch-size 8 --validation-batch-size 32 --opt rmsprop --momentum .9 --weight-decay 1e-5 --lr .256 --decay-epochs 2.4 --decay-rate .97 --model-kwargs chann_mult={width} dep_mult={depth} --drop .2 --num-classes 2 --flops 129.432634496"
+    run_this = f"python -u pytorch-image-models/train.py 
+    --epochs 100 
+    --log-interval 1 
+    --data-dir './img/' 
+    --class-map './txt/class.txt' 
+    --model efficientnet_b0 
+    --input-size 3 {resolution} {resolution} 
+    --batch-size 8 
+    --validation-batch-size 32 
+    --opt rmsprop 
+    --momentum .9 
+    --weight-decay 1e-5 
+    --lr .256 
+    --decay-epochs 2.4 
+    --decay-rate .97 
+    --model-kwargs chann_mult={width} dep_mult={depth} 
+    --drop .2 
+    --num-classes 2 
+    --flops 129.432634496"
     print(run_this)
     subprocess.run(run_this,shell=True, check=True)
     
