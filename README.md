@@ -10,10 +10,20 @@
 * cd buh 
 * git clone https://github.com/laefy13/pytorch-image-models.git
 * git clone https://github.com/laefy13/keras-efficientnets.git
+* git clone https://github.com/laefy13/WSTMD.git
 ### for installing 
 * pip install -r req_docker.txt
 * cd keras-efficientnets
 * pip install .
+* cd ../WSTMD
+* pip install -r requirements.txt
+* cd ..
+
+### Needed to be download for WSTMD
+* https://www.kaggle.com/datasets/clearhanhui/biyesheji for the dataset, 
+    * just move all of the image to the the WSTMD/data/img or 
+    * rename the folder to tongue then use the move_THIS.py, not tested but should work  
+* https://download.pytorch.org/models/resnet34-333f7ec4.pth for the pre_weight, and move this insed WSTMD folder
 ### To run nas? and get logs for evaulation:
 * python nas_question_mark.py
 ### system info logs
