@@ -1,3 +1,5 @@
 pytorch-image-models/**
 output/**
-
+sample.py
+*.pkl
+*.npz

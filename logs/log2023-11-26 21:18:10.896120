@@ -1,0 +1,9 @@
+2023-11-26 21:18:10,908 Training with a single process on 1 device (cuda:0).
+2023-11-26 21:18:11,041 Model efficientnet_b0 created, param count:8944546
+2023-11-26 21:18:11,041 Data processing configuration for current model + dataset:
+2023-11-26 21:18:11,041 	input_size: (3, 224, 224)
+2023-11-26 21:18:11,041 	interpolation: bicubic
+2023-11-26 21:18:11,041 	mean: (0.485, 0.456, 0.406)
+2023-11-26 21:18:11,041 	std: (0.229, 0.224, 0.225)
+2023-11-26 21:18:11,041 	crop_pct: 0.875
+2023-11-26 21:18:11,041 	crop_mode: center

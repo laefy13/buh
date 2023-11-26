@@ -23,8 +23,7 @@ if editing the structure of the effnet is needed go to the pytorch-image-models 
 '''
 import os
 import subprocess
-from keras_efficientnets.optimize import optimize_coefficients
-from keras_efficientnets.optimize import get_compound_coeff_func
+from WSTMD.get_flops import wstmd_flops
 '''
 TRAINING SCRIPT, ADJUSTABLE ACCORDINGLY
  python train.py --data-dir "./img/" --class-map "./txt/class.txt" --num-classes 2
@@ -80,8 +79,14 @@ TRAINING SCRIPT, ADJUSTABLE ACCORDINGLY
  
 
 '''
+# get flops
+curr_flops = wstmd_flops()
+
 # function for producing an array of an array of coefficients, depth, width and resolution
 # check the readme of the keras-efficientnets for the syntax of this function
+# have to move the imports here because for some reason im getting Segmentation fault (core dumped)
+from keras_efficientnets.optimize import optimize_coefficients
+from keras_efficientnets.optimize import get_compound_coeff_func
 results = optimize_coefficients(phi=1., max_cost=2.0, search_per_coeff=10, verbose=True,sort_by_loss=True)
 
 #loop that will executre the train.py of the pytorch-image-models repo
@@ -90,25 +95,26 @@ for i in range(len(results)):
     depth = results[i][0]
     width = results[i][1]
     resolution = round(224 * results[i][2])
-    run_this = f"python -u pytorch-image-models/train.py 
-    --epochs 100 
-    --log-interval 1 
-    --data-dir './img/' 
-    --class-map './txt/class.txt' 
-    --model efficientnet_b0 
-    --input-size 3 {resolution} {resolution} 
-    --batch-size 8 
-    --validation-batch-size 32 
-    --opt rmsprop 
-    --momentum .9 
-    --weight-decay 1e-5 
-    --lr .256 
-    --decay-epochs 2.4 
-    --decay-rate .97 
-    --model-kwargs chann_mult={width} dep_mult={depth} 
-    --drop .2 
-    --num-classes 2 
-    --flops 129.432634496"
+    batch_size = 32
+    run_this = f"python -u pytorch-image-models/train.py \
+    --epochs 100 \
+    --log-interval 1 \
+    --data-dir './img/' \
+    --class-map './txt/class.txt' \
+    --model efficientnet_b0 \
+    --input-size 3 {resolution} {resolution} \
+    --batch-size {batch_size} \
+    --validation-batch-size {batch_size} \
+    --opt rmsprop \
+    --momentum .9 \
+    --weight-decay 1e-5 \
+    --lr .256 \
+    --decay-epochs 2.4 \
+    --decay-rate .97 \
+    --model-kwargs chann_mult={width} dep_mult={depth} \
+    --drop .2 \
+    --num-classes 2 \
+    --flops {curr_flops}"
     print(run_this)
     subprocess.run(run_this,shell=True, check=True)
     
