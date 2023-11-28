@@ -23,6 +23,7 @@ if editing the structure of the effnet is needed go to the pytorch-image-models 
 '''
 import os
 import subprocess
+import time
 from WSTMD.get_flops import wstmd_flops
 '''
 TRAINING SCRIPT, ADJUSTABLE ACCORDINGLY
@@ -88,6 +89,10 @@ curr_flops = wstmd_flops()
 from keras_efficientnets.optimize import optimize_coefficients
 from keras_efficientnets.optimize import get_compound_coeff_func
 results = optimize_coefficients(phi=1., max_cost=2.0, search_per_coeff=10, verbose=True,sort_by_loss=True)
+with open('coefficients.txt', 'w') as coff:
+    for result in results:
+        coff.write(str(result))
+    
 
 #loop that will executre the train.py of the pytorch-image-models repo
 #the hyperparameters currently being used is according to the original efficientnet paper (i dotn know if i missed some)
@@ -97,7 +102,7 @@ for i in range(len(results)):
     resolution = round(224 * results[i][2])
     batch_size = 32
     run_this = f"python -u pytorch-image-models/train.py \
-    --epochs 100 \
+    --epochs 50 \
     --log-interval 1 \
     --data-dir './img/' \
     --class-map './txt/class.txt' \
@@ -117,5 +122,7 @@ for i in range(len(results)):
     --flops {curr_flops}"
     print(run_this)
     subprocess.run(run_this,shell=True, check=True)
+    print('going to sleep zzzzzzzzzz')
+    time.sleep(10)
     
     
