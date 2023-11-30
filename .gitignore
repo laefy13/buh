@@ -3,3 +3,7 @@ output/**
 sample.py
 *.pkl
 *.npz
+ds/**
+img/**
+semi/**
+*.zip

@@ -1,0 +1,11 @@
+2023-11-30 02:30:34,571 Training with a single process on 1 device (cuda:0).
+2023-11-30 02:30:34,711 Model efficientnet_b0 created, param count:6515746
+2023-11-30 02:30:34,711 Data processing configuration for current model + dataset:
+2023-11-30 02:30:34,711 	input_size: (3, 317, 317)
+2023-11-30 02:30:34,711 	interpolation: bicubic
+2023-11-30 02:30:34,711 	mean: (0.485, 0.456, 0.406)
+2023-11-30 02:30:34,711 	std: (0.229, 0.224, 0.225)
+2023-11-30 02:30:34,711 	crop_pct: 0.875
+2023-11-30 02:30:34,711 	crop_mode: center
+2023-11-30 02:30:37,185 AMP not enabled. Training in float32.
+2023-11-30 02:30:37,209 Scheduled epochs: 50. LR stepped per epoch.

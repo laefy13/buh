@@ -1,0 +1,10 @@
+2023-11-29 04:04:17,461 Training with a single process on 1 device (cuda:0).
+2023-11-29 04:04:17,767 Loaded state_dict from checkpoint './output/train/20231128-060642-efficientnet_b0-224/checkpoint-12.pth.tar'
+2023-11-29 04:04:17,991 Data processing configuration for current model + dataset:
+2023-11-29 04:04:17,991 	input_size: (3, 224, 224)
+2023-11-29 04:04:17,991 	interpolation: bicubic
+2023-11-29 04:04:17,991 	mean: (0.485, 0.456, 0.406)
+2023-11-29 04:04:17,991 	std: (0.229, 0.224, 0.225)
+2023-11-29 04:04:17,991 	crop_pct: 0.875
+2023-11-29 04:04:17,992 	crop_mode: center
+2023-11-29 04:04:20,560 AMP not enabled. Training in float32.
