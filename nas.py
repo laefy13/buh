@@ -21,6 +21,7 @@ if editing the structure of the effnet is needed go to the pytorch-image-models 
     'efficientnet-l2': (4.3, 5.3, 800, 0.5),
 
 '''
+import argparse
 import os
 import subprocess
 import time
@@ -28,6 +29,24 @@ from WSTMD.get_flops import wstmd_flops
 import yaml
 import torch
 
+def _parse_args():
+    # Do we have a config file to parse?
+    args = parser.parse_args()
+
+    # Cache the args as a text string to save them in the output dir later
+    args_text = yaml.safe_dump(args.__dict__, default_flow_style=False)
+    return args, args_text
+parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
+
+parser.add_argument('--output-dir', metavar='DIR',
+                    help='path to output')
+parser.add_argument('--in-dir', metavar='DIR',
+                    help='path to output')
+                    
+parser.add_argument('--lr', type=float, default=None, metavar='LR',
+                   help='learning rate, overrides lr-base if set (default: None)')
+parser.add_argument('--lr-base', type=float, default=0.1, metavar='LR',
+                   help='base learning rate: lr = lr_base * global_batch_size / base_size')
 # get flops
 if not os.path.exists('sys_flops.txt'):
     curr_flops = wstmd_flops()
@@ -39,8 +58,6 @@ else:
         
         
 # function for producing an array of an array of coefficients, depth, width and resolution
-# check the readme of the keras-efficientnets for the syntax of this function
-# have to move the imports here because for some reason im getting Segmentation fault (core dumped)
 
 
 if not os.path.exists('coefficients.txt'):
@@ -55,64 +72,65 @@ if not os.path.exists('coefficients.txt'):
 else:
     with open('coefficients.txt','r') as f:
         results=f.readlines()  
+        
 #loop that will executre the train.py of the pytorch-image-models repo
-#the hyperparameters currently being used is according to the original efficientnet paper (i dotn know if i missed some)
-trained_len = len(results)
-county = 0
-# while county != trained_len:
-#     county=0
-existing_combinations = set()
-with open('trained.txt','r') as tr:
-    tr.seek(0)
-    for line in tr:
-        existing_combinations.add(tuple(map(float, line.strip().split(','))))
 
+args, args_text = _parse_args()
+trained_len = len(results)
+existing_combinations = set()
+if os.path.exists(f'{args.in_dir}/trained.txt'):
+  with open(f'{args.in_dir}/trained.txt','r') as tr:
+      tr.seek(0)
+      for line in tr:
+          existing_combinations.add(tuple(map(float, line.strip().split(','))))
+
+run_this = f"python -u pytorch-image-models/train.py \
+            --epochs 5 \
+            --log-interval 1 \
+            --data-dir './images_2/' \
+            --model efficientnet_b0 \
+            --opt rmsprop \
+            --momentum .9 \
+            --weight-decay 1e-5 \
+            --decay-epochs 2.4 \
+            --decay-rate .97 \
+            --drop .2 \
+            --num-classes 2 \
+            --flops {curr_flops}\
+            --no-aug \
+            --output {args.output_dir}"
+if args.lr_base:
+  run_this+=f" --lr-base {args.lr_base}"
+if args.lr:
+  run_this+=f" --lr {args.lr}"
+print(args.output_dir)
 for i in range(len(results)):
-    tr = open('trained.txt', 'a+')
+    # if i < 30:
+    #   continue
+    tr = open(f'{args.output_dir}/trained.txt', 'a+')
     try:
         d,w,r = results[i].strip().split(',')
         depth = float(d)
         width =  float(w)
         resolution = round(224 *  float(r))
-        if (depth, width, results[i][2]) in existing_combinations:
+        if (depth, width, float(r)) in existing_combinations:
+            tr.write(f'{depth},{width},{float(r)}\n')   
+
             continue
         batch_size = 32
-        # run_this = f"python pytorch-image-models/inf2.py ./ym/ --model efficientnet_b0 --input-size 3 224 224 --model-kwargs chann_mult=1 dep_mult=2 --initial-checkpoint ./output/train/20231128-060642-efficientnet_b0-224/checkpoint-12.pth.tar  --num-classes 2"
-        run_this = f"python -u pytorch-image-models/train.py \
-            --epochs 50 \
-            --log-interval 1 \
-            --data-dir './ds/' \
-            --model efficientnet_b0 \
+        run_this+=f" --model-kwargs chann_mult={width} dep_mult={depth} \
             --input-size 3 {resolution} {resolution} \
             --batch-size {batch_size} \
-            --validation-batch-size {batch_size} \
-            --opt rmsprop \
-            --momentum .9 \
-            --weight-decay 1e-5 \
-            --lr .256 \
-            --decay-epochs 2.4 \
-            --decay-rate .97 \
-            --model-kwargs chann_mult={width} dep_mult={depth} \
-            --drop .2 \
-            --num-classes 2 \
-            --flops {curr_flops}"
+            --validation-batch-size {batch_size} "
         print(run_this)
         subprocess.run(run_this,shell=True, check=True)
         tr.write(f'{depth},{width},{float(r)}\n')
         print('going to sleep zzzzzzzzzz')
         torch.cuda.empty_cache()
-        time.sleep(100)
+        time.sleep(50)
         torch.cuda.empty_cache()
-        county=i
     except Exception as e:
-        # count = 0
-        # print('going to sleep more zzzzzzzzzzzzz')
-        # torch.cuda.empty_cache()
-        # time.sleep(1000)
         continue
 
     finally:
         tr.close()
-    # county+=1
-
-    

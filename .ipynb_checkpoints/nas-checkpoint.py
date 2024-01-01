@@ -58,7 +58,6 @@ else:
 #loop that will executre the train.py of the pytorch-image-models repo
 #the hyperparameters currently being used is according to the original efficientnet paper (i dotn know if i missed some)
 trained_len = len(results)
-county = 0
 # while county != trained_len:
 #     county=0
 existing_combinations = set()
@@ -74,10 +73,9 @@ for i in range(len(results)):
         depth = float(d)
         width =  float(w)
         resolution = round(224 *  float(r))
-        if (depth, width, results[i][2]) in existing_combinations:
+        if (depth, width, float(r)) in existing_combinations:
             continue
         batch_size = 32
-        # run_this = f"python pytorch-image-models/inf2.py ./ym/ --model efficientnet_b0 --input-size 3 224 224 --model-kwargs chann_mult=1 dep_mult=2 --initial-checkpoint ./output/train/20231128-060642-efficientnet_b0-224/checkpoint-12.pth.tar  --num-classes 2"
         run_this = f"python -u pytorch-image-models/train.py \
             --epochs 50 \
             --log-interval 1 \
@@ -101,18 +99,10 @@ for i in range(len(results)):
         tr.write(f'{depth},{width},{float(r)}\n')
         print('going to sleep zzzzzzzzzz')
         torch.cuda.empty_cache()
-        time.sleep(100)
+        time.sleep(50)
         torch.cuda.empty_cache()
-        county=i
     except Exception as e:
-        # count = 0
-        # print('going to sleep more zzzzzzzzzzzzz')
-        # torch.cuda.empty_cache()
-        # time.sleep(1000)
         continue
 
     finally:
         tr.close()
-    # county+=1
-
-    
